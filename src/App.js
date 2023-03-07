@@ -19,32 +19,20 @@ export default function App()
   {
     let totalActiveTodos = 0;
 
-    listItems.forEach(item => 
-    {
-      if (item.active === true)
-        totalActiveTodos++;
-    })
-
+    listItems.forEach(item => {if (item.active === true) totalActiveTodos++;})
     setActiveTodos(totalActiveTodos);
   }
 
   function addListItem()
   {
-    // getting inputs from ref
     let text = itemTextRef.current.value;
     if (text === '') return;
 
-    // creating new item and joining with previous items
     const newItem = {id: v4(), text: text, active: true};
     const newItems = [...listItems, newItem];
-    
-    // calculating total and setting new items
     setListItems(newItems);
     
-    // clearing inputs
     itemTextRef.current.value = ""; 
-
-    // count the active to-dos
     countActiveTodos();
   }
 
@@ -56,6 +44,7 @@ export default function App()
 
   function TodosCounter()
   {
+    // do this every time there is any change to the counter component
     useEffect(() => {countActiveTodos()}, []);
   
     if (listItems.length > 0)

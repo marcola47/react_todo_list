@@ -19,30 +19,6 @@ input {font-size: inherit;}
   --icon-color: #ff0000;
 }
 
-/* Light theme */
-@media (prefers-color-scheme: light) {
-  /* Use the light favicon */
-  link[rel="icon"] {
-    display: block !important;
-  }
-  /* Hide the dark favicon */
-  link[rel="dark_theme_icon"] {
-    display: none !important;
-  }
-}
-
-/* Dark theme */
-@media (prefers-color-scheme: dark) {
-  /* Use the dark favicon */
-  link[rel="alternate icon"] {
-    display: block !important;
-  }
-  /* Hide the light favicon */
-  link[rel="dark_theme_icon"] {
-    display: none !important;
-  }
-}
-
 .highlight
 {color: var(--hl-blue-dark)}
 
