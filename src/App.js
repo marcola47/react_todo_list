@@ -1,25 +1,90 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, useRef } from 'react';
+import { v4 } from 'uuid';
+import './css/app.css';
 
-function App() {
+import TodosList from './components/list';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faList } from '@fortawesome/free-solid-svg-icons';
+
+export const ListItemsContext = React.createContext();
+
+export default function App() 
+{
+  const [listItems, setListItems] = useState([]);
+  const [activeTodos, setActiveTodos] = useState(0);
+  const itemTextRef = useRef();
+
+  function countActiveTodos()
+  {
+    let totalActiveTodos = 0;
+
+    listItems.forEach(item => 
+    {
+      if (item.active === true)
+        totalActiveTodos++;
+    })
+
+    setActiveTodos(totalActiveTodos);
+  }
+
+  function addListItem()
+  {
+    // getting inputs from ref
+    let text = itemTextRef.current.value;
+    if (text === '') return;
+
+    // creating new item and joining with previous items
+    const newItem = {id: v4(), text: text, active: true};
+    const newItems = [...listItems, newItem];
+    
+    // calculating total and setting new items
+    setListItems(newItems);
+    
+    // clearing inputs
+    itemTextRef.current.value = ""; 
+
+    // count the active to-dos
+    countActiveTodos();
+  }
+
+  function handleKeyDown(e)
+  {
+    if (e.key === "Enter")
+      addListItem();
+  }
+
+  function TodosCounter()
+  {
+    useEffect(() => {countActiveTodos()}, []);
+  
+    if (listItems.length > 0)
+    {
+      return ( 
+        <div className='total-todos' id='total-todos'>
+          <div>Total to-dos: <span className='highlight'>{listItems.length}</span></div>
+          <div>Active to-dos: <span className='highlight'>{activeTodos}</span></div>
+        </div>
+      )
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className='app-title'><h1>TO-DO LIST</h1><FontAwesomeIcon icon={faList}></FontAwesomeIcon></div>
+
+      <div className='inputs'>
+        <input id='input-text' onKeyDown={handleKeyDown} ref={itemTextRef} type="text" placeholder='To-do'/>
+        <button id='input-submit' onClick={addListItem}>ADD ITEM</button> 
+      </div>
+
+      <div className='container'>
+        <TodosCounter/>
+      
+        <ListItemsContext.Provider value={{ listItems, setListItems }}>
+            <TodosList listItems={listItems}/>
+        </ListItemsContext.Provider>
+      </div>
     </div>
   );
-}
-
-export default App;
+};
